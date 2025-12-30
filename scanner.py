@@ -22,16 +22,18 @@ for stock in stocks:
     # remove incomplete candle
     df = df[:-1]
 
-    last5 = df.tail(5).reset_index()
+    df = df.reset_index()   # IMPORTANT
+
+    last5 = df.tail(5)
 
     for _, r in last5.iterrows():
         rows.append([
             stock.replace(".NS", ""),
-            r["Datetime"].strftime("%Y-%m-%d %H:%M"),
-            round(r["Open"], 2),
-            round(r["High"], 2),
-            round(r["Low"], 2),
-            round(r["Close"], 2),
+            pd.to_datetime(r["Datetime"]).strftime("%Y-%m-%d %H:%M"),
+            round(float(r["Open"]), 2),
+            round(float(r["High"]), 2),
+            round(float(r["Low"]), 2),
+            round(float(r["Close"]), 2),
             int(r["Volume"])
         ])
 
