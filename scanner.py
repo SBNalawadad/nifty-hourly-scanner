@@ -19,7 +19,7 @@ for stock in stocks:
     if df.empty:
         continue
 
-    # remove incomplete candle
+    # Remove current running candle
     df = df.iloc[:-1]
 
     df = df.reset_index()
@@ -27,9 +27,11 @@ for stock in stocks:
     last5 = df.tail(5)
 
     for r in last5.itertuples(index=False):
+        candle_time = pd.to_datetime(r[0]).strftime("%Y-%m-%d %H:%M")
+
         rows.append([
             stock.replace(".NS", ""),
-            r.Datetime.strftime("%Y-%m-%d %H:%M"),
+            candle_time,
             round(float(r.Open), 2),
             round(float(r.High), 2),
             round(float(r.Low), 2),
@@ -57,7 +59,7 @@ tr:nth-child(even) {{ background: #f2f2f2; }}
 <body>
 
 <h2>NIFTY – Last 5 Hourly Candles</h2>
-<p>Updated every hour via GitHub Actions</p>
+<p>Auto updated every hour using GitHub Actions</p>
 
 {df_final.to_html(index=False)}
 
