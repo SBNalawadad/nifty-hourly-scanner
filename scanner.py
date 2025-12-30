@@ -20,21 +20,21 @@ for stock in stocks:
         continue
 
     # remove incomplete candle
-    df = df[:-1]
+    df = df.iloc[:-1]
 
-    df = df.reset_index()   # IMPORTANT
+    df = df.reset_index()
 
     last5 = df.tail(5)
 
-    for _, r in last5.iterrows():
+    for r in last5.itertuples(index=False):
         rows.append([
             stock.replace(".NS", ""),
-            pd.to_datetime(r["Datetime"]).strftime("%Y-%m-%d %H:%M"),
-            round(float(r["Open"]), 2),
-            round(float(r["High"]), 2),
-            round(float(r["Low"]), 2),
-            round(float(r["Close"]), 2),
-            int(r["Volume"])
+            r.Datetime.strftime("%Y-%m-%d %H:%M"),
+            round(float(r.Open), 2),
+            round(float(r.High), 2),
+            round(float(r.Low), 2),
+            round(float(r.Close), 2),
+            int(r.Volume)
         ])
 
 df_final = pd.DataFrame(
@@ -45,7 +45,7 @@ df_final = pd.DataFrame(
 html = f"""
 <html>
 <head>
-<title>NIFTY 1H – Last 5 Candles</title>
+<title>NIFTY 1H Scanner</title>
 <style>
 body {{ font-family: Arial; padding: 20px; }}
 table {{ border-collapse: collapse; width: 100%; }}
@@ -57,7 +57,7 @@ tr:nth-child(even) {{ background: #f2f2f2; }}
 <body>
 
 <h2>NIFTY – Last 5 Hourly Candles</h2>
-<p>Auto updated every hour</p>
+<p>Updated every hour via GitHub Actions</p>
 
 {df_final.to_html(index=False)}
 
